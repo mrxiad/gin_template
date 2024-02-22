@@ -24,7 +24,9 @@ const goPlayPage = () => {
   <navbar />
   <div id="app">
     <div class="main">
-      <div class="playBox"></div>
+      <div class="playBox">
+        <iframe src="//player.bilibili.com/player.html?aid=551844951&bvid=BV1Gi4y1y7KZ&cid=514741932&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+      </div>
       <div class="videoInfo margin">
         <div class="userInfo">
           <div class="userImg">
@@ -73,6 +75,10 @@ const goPlayPage = () => {
     width: 100%;
     height: 30vh;
     background-color: black;
+  }
+  .playBox iframe {
+    width: 100%;
+    height: 100%;
   }
   .videoInfo {
     padding: 3vw;

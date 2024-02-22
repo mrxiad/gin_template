@@ -60,6 +60,16 @@ const router = createRouter({
       path:'/article',
       name:'article',
       component: import('../components/article.vue'),
+    },
+    {
+      path:'/topic',
+      name:'topic',
+      component: import('../components/topic.vue'),
+    },
+    {
+      path:'/welcome',
+      name:'welcome',
+      component: import('../components/welcome.vue'),
     }
 
   ]

@@ -1,8 +1,10 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import indexTitle from "./indexTitle.vue";
 import { useRouter } from "vue-router";
+import welcome from './welcome.vue'
 const router = useRouter();
+const welcomeIsDisplay = ref('')
 const imgList = ref([]);
 const getImgFile = async () => {
   for (let i = 1; i <= 4; i++) {
@@ -17,10 +19,14 @@ const goPlayPage = () => {
 const goArticlePage = () => {
   router.push({ path: "/article" });
 };
+onMounted(() => {
+  welcomeIsDisplay.value = localStorage.getItem('oneLoading')?localStorage.getItem('oneLoading'):1
+})
 </script>
 
 <template>
   <div id="app">
+    <welcome v-if="welcomeIsDisplay == 1"></welcome>
     <div class="main">
       <div class="videoBox">
         <indexTitle :title="'视频专区'"></indexTitle>
