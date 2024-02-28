@@ -29,7 +29,7 @@ const items = [
   <div id="app">
     <div class="main">
       <div class="ljName">为您推荐如下路线</div>
-      <van-steps direction="vertical" :active="100">
+      <!-- <van-steps direction="vertical" :active="100">
         <van-step>
           <h3>路线1</h3>
           <p>2016-07-12 12:40</p>
@@ -54,7 +54,16 @@ const items = [
           <h3>路线6</h3>
           <p>2016-07-10 09:30</p>
         </van-step>
-      </van-steps>
+      </van-steps> -->
+      <div>
+        <div class="lineContext" style="position: relative;">
+          <div class="line" style="position: absolute; width: 0.2vw; background-color: aqua;"></div>
+          <div class="context" style="position: absolute;">
+            <h3>路线1</h3>
+            <p>2016-07-12 12:40</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

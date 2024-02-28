@@ -11,8 +11,8 @@ import navbar from "./indexTitle.vue";
           <img src="../assets/videoImg/img1.png" />
         </div>
         <div class="info">
-          <div class="nickname">昵称</div>
-          <div class="account">账号</div>
+          <div class="nickname">昵称:  小明</div>
+          <div class="account">账号:    456</div>
         </div>
       </div>
       <div class="route">

@@ -57,7 +57,7 @@ const router = createRouter({
       component: import('../components/selectSchool.vue'),
     },
     {
-      path:'/article',
+      path:'/article/:id',
       name:'article',
       component: import('../components/article.vue'),
     },

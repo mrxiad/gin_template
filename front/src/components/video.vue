@@ -18,13 +18,28 @@ getImgFile();
 const goPlayPage = () => {
   router.push({ path: "/video", query: { id: 1 } });
 };
+
+// 新增全屏方法(没用)
+const requestFullScreen = () => {
+  const element = document.querySelector(".playBox iframe");
+  if (element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if (element.mozRequestFullScreen) {
+    element.mozRequestFullScreen();
+  } else if (element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen();
+  } else if (element.msRequestFullscreen) {
+    element.msRequestFullscreen();
+  }
+};
+
 </script>
 
 <template>
   <navbar />
   <div id="app">
     <div class="main">
-      <div class="playBox">
+      <div class="playBox" @click="requestFullScreen">
         <iframe src="//player.bilibili.com/player.html?aid=551844951&bvid=BV1Gi4y1y7KZ&cid=514741932&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
       </div>
       <div class="videoInfo margin">

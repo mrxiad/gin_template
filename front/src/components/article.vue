@@ -1,19 +1,54 @@
 <script setup>
+import $ from "jquery";
 import { ref } from "vue";
 import navbar from "./navbar.vue";
+import { onMounted } from "vue";
+let welcomeIsDisplay = ref('')
+
+
+let articleTitlesContents = ref([]);
+let articleContent = ref([])
+let articleTitle = ref ([])
+onMounted(() => {
+  welcomeIsDisplay.value = localStorage.getItem('oneLoading')?localStorage.getItem('oneLoading'):1
+
+  //请求,向后端8080/getTitle发送请求
+  $.ajax({
+    url: "http://localhost:8080/api/getTitleList",//返回数组四个对象，每个都是{title,content}
+    type: "get",
+    success: function (data) {
+      articleTitlesContents.value = data.data;
+
+      //找到自己url的id
+      let index = window.location.href.lastIndexOf('/');
+      let id = window.location.href.substring(index+1);
+      console.log("当前页面的id为"+id)
+
+      //对articleConent赋值
+      articleContent.value = articleTitlesContents.value[id].content;
+      articleContent.value = articleContent.value.replace(/\n/g, '<br>');
+
+
+      //对articleTitle赋值
+      articleTitle.value = articleTitlesContents.value[id].title;
+
+
+      //输出文章标题
+      console.log(articleContent.value.substring(0,5))
+    },
+  });
+})
+
 </script>
 
 <template>
   <navbar />
   <div id="app">
     <div class="main">
-      <div class="title margin">标题</div>
-      <div class="info margin">信息</div>
-      <div class="context">
-        我的年快过完了，从初一到初七，从内蒙到济南 回家第一天拍的牛马群
-        走的那天窗户上按完手印发现外面挺好看
-        去机场的路上的雕塑，朋友说寓意：立马滚蛋 飞机降落前拍到的北京落脚点
-        在济南第一天晚上济南下起鹅毛大雪（P了） 逛街遇到济南棣棣
+      <div class="title margin">{{articleTitle}}</div>
+      <div class="info margin"></div>
+      <div class="context">    
+        <div v-html="articleContent"></div>
       </div>
     </div>
   </div>

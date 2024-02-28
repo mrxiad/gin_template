@@ -14,6 +14,15 @@ getImgFile();
 const selectSchool = () => {
   router.push({ path: "/selectSchool" });
 };
+
+// 新增：定义四个不同目标的描述
+const slogans = ref([
+  { text: "保研：超越限界，探索未来这段路" },
+  { text: "就业：拓展视野，再书职场新篇章" },
+  { text: "出国：跨越边界，再读世界这本书" },
+  { text: "考研：游历考海，开启学业新征程" }
+]);
+
 </script>
 
 <template>
@@ -21,11 +30,11 @@ const selectSchool = () => {
     <div class="main">
       <div
         class="sloganBox"
-        v-for="item in 4"
-        :key="item"
+        v-for="(slogan, index) in slogans"
+        :key="index"
         @click="selectSchool"
       >
-        <div>考研</div>
+        <div>{{ slogan.text }}</div>
       </div>
     </div>
   </div>

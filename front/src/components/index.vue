@@ -1,4 +1,5 @@
 <script setup>
+import $ from "jquery";
 import { onMounted, ref } from "vue";
 import indexTitle from "./indexTitle.vue";
 import { useRouter } from "vue-router";
@@ -6,6 +7,7 @@ import welcome from './welcome.vue'
 const router = useRouter();
 const welcomeIsDisplay = ref('')
 const imgList = ref([]);
+const articleTitles = ref([]);
 const getImgFile = async () => {
   for (let i = 1; i <= 4; i++) {
     const file = await import(`../assets/videoImg/img${i}.png`);
@@ -16,12 +18,32 @@ getImgFile();
 const goPlayPage = () => {
   router.push({ path: "/video" });
 };
-const goArticlePage = () => {
-  router.push({ path: "/article" });
+const goArticlePage = (index) => {
+  if (index === undefined) {
+    console.error('Article ID is required');
+    return; // 提前退出，不执行导航
+  }
+  console.log(index);
+  router.push({ 
+    name: 'article',
+    params: { id: index },
+  });
 };
 onMounted(() => {
   welcomeIsDisplay.value = localStorage.getItem('oneLoading')?localStorage.getItem('oneLoading'):1
+
+  //请求,向后端8080/getTitle发送请求
+  $.ajax({
+    url: "http://localhost:8080/api/getTitleList",//返回数组四个对象，每个都是{title,content}
+    type: "get",
+    success: function (data) {
+      articleTitles.value = data.data;
+      console.log(articleTitles.value);
+    },
+  });
 })
+
+
 </script>
 
 <template>
@@ -47,14 +69,13 @@ onMounted(() => {
             class="articleItem"
             v-for="(Item, index) in imgList"
             :key="index"
-            @click="goArticlePage"
+            @click="goArticlePage(index)"
           >
             <div class="left">
-              <!-- :src="Item" -->
               <img :src="Item" />
             </div>
             <div class="right">
-              <div class="top">公考政策热点</div>
+              <div class="top">{{articleTitles[index].title}}</div>
               <div class="bottom">建立高级思维</div>
             </div>
           </div>

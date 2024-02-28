@@ -11,6 +11,7 @@ func InitExampleRouter(r *gin.Engine) {
 	exampleGroup := r.Group("/api")
 	{
 		exampleGroup.POST("/register", example_controller.ExampleController{}.SignUpHandler)
-		exampleGroup.POST("/login",example_controller.ExampleController{}.LoginHandler)
+		exampleGroup.POST("/login", example_controller.ExampleController{}.LoginHandler)
+		exampleGroup.GET("getTitleList", example_controller.ExampleController{}.GetTitleListHandler)
 	}
 }
