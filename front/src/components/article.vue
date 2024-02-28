@@ -11,7 +11,6 @@ let articleContent = ref([])
 let articleTitle = ref ([])
 onMounted(() => {
   welcomeIsDisplay.value = localStorage.getItem('oneLoading')?localStorage.getItem('oneLoading'):1
-
   //请求,向后端8080/getTitle发送请求
   $.ajax({
     url: "http://localhost:8080/api/getTitleList",//返回数组四个对象，每个都是{title,content}
