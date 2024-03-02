@@ -1,37 +1,80 @@
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import navbar from "./navbar.vue";
+import { ref, computed,onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import navbar from './navbar.vue';
+import $ from "jquery"
 const router = useRouter();
+const urlid = ref(0); // 默认值为0，可以根据实际情况调整
+
 const imgList = ref([]);
+const imgList2 = ref([]);
+
 const getImgFile = async () => {
   for (let i = 1; i <= 4; i++) {
-    const file = await import(`../assets/videoImg/img${i}.png`);
-    imgList.value.push(file.default);
+    const file = await import(`../assets/fourImg/img${i}.jpg`);
+    if (file!=null){
+      imgList.value.push(file.default);
+    }
+  }
+  for (let i = 1; i <= 2; i++) {
+    const file = await import(`../assets/videoImg/img${i}.jpg`);
+    if (file!=null){
+      imgList2.value.push(file.default);
+    }
   }
 };
-const props = defineProps({
-  title: String,
+
+
+
+// 使用计算属性来动态获取当前图片的 URL
+const currentImgUrl = computed(() => {
+  return imgList2.value[urlid.value] ? imgList2.value[urlid.value] : '';
 });
+
+
+const goPlayPage = (index) => {
+  router.push({ 
+    name: "article",  
+    params:{
+      id:index,
+    },
+   });
+};
+
 getImgFile();
 
-const goPlayPage = () => {
-  router.push({ path: "/video", query: { id: 1 } });
-};
+let articleTitlesContents = ref([]);
+let articleTitle = ref ([])
 
-// 新增全屏方法(没用)
-const requestFullScreen = () => {
-  const element = document.querySelector(".playBox iframe");
-  if (element.requestFullscreen) {
-    element.requestFullscreen();
-  } else if (element.mozRequestFullScreen) {
-    element.mozRequestFullScreen();
-  } else if (element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen();
-  } else if (element.msRequestFullscreen) {
-    element.msRequestFullscreen();
-  }
-};
+onMounted(() => {
+  // 获取到当前的id，假设id是从URL的最后一部分获取的
+  const index = window.location.href.lastIndexOf('/');
+  const id = window.location.href.substring(index + 1);
+  urlid.value = parseInt(id); // 将id转换为数组索引
+  //请求,向后端8080/getTitle发送请求
+  $.ajax({
+    url: "http://localhost:8080/api/getTitleList",//返回数组四个对象，每个都是{title,content}
+    type: "get",
+    success: function (data) {
+      articleTitlesContents.value = data.data;
+
+      //对articleTitle赋值
+      articleTitle.value = articleTitlesContents.value[id].title;
+    },
+  });
+});
+
+const srcUrls = ref([
+  "//player.bilibili.com/player.html?aid=776578448&bvid=BV1T14y1P737&cid=932612858&p=1",
+  "//player.bilibili.com/player.html?aid=618548088&bvid=BV1Eh4y1A7KT&cid=1271456273&p=1",
+]);
+
+
+const currentVideoUrl= computed(()=>{
+  return srcUrls.value[urlid.value];
+})
+
+
 
 </script>
 
@@ -39,20 +82,21 @@ const requestFullScreen = () => {
   <navbar />
   <div id="app">
     <div class="main">
-      <div class="playBox" @click="requestFullScreen">
-        <iframe src="//player.bilibili.com/player.html?aid=551844951&bvid=BV1Gi4y1y7KZ&cid=514741932&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+      <div class="playBox">
+        <!-- <iframe src="//player.bilibili.com/player.html?aid=551844951&bvid=BV1Gi4y1y7KZ&cid=514741932&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe> -->
+        <iframe :src="currentVideoUrl" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
       </div>
       <div class="videoInfo margin">
         <div class="userInfo">
           <div class="userImg">
-            <img src="../assets/videoImg/img1.png" />
+            <img :src="currentImgUrl" />
           </div>
           <div class="info">
-            <div class="nickname">昵称</div>
-            <div class="account">日期</div>
+            <div class="nickname"></div>
+            <div class="account"></div>
           </div>
         </div>
-        <div class="videoName margin">视频名称</div>
+        <div class="videoName margin">推荐文章</div>
       </div>
       <div class="recommend margin">
         <div class="context">
@@ -60,16 +104,15 @@ const requestFullScreen = () => {
             class="articleItem"
             v-for="(Item, index) in imgList"
             :key="index"
-            @click="goPlayPage"
+            @click="goPlayPage(index)"
           >
             <div class="left">
-              <!-- :src="Item" -->
               <img :src="Item" />
             </div>
             <div class="right">
-              公考政策热点公考政策热点公考政策热点公考政策热点公考政策热点公考政策热点公考政策热点
-              <!-- <div class="top">公考政策热点</div> -->
-              <!-- <div class="bottom">建立高级思维</div> -->
+              <template v-if="articleTitlesContents.length > index">
+                {{ articleTitlesContents[index].title }}
+              </template>
             </div>
           </div>
         </div>
@@ -77,6 +120,7 @@ const requestFullScreen = () => {
     </div>
   </div>
 </template>
+
 
 <style scoped lang="scss">
 * {

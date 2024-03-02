@@ -2,9 +2,13 @@ package example_controller
 
 import (
 	"bufio"
+	"encoding/xml"
 	"fmt"
+	"io/ioutil"
+	"math/rand"
+	"net/http"
+	"strconv"
 	"strings"
-
 	// "fmt"
 	"github.com/gin-gonic/gin"
 	"os"
@@ -145,4 +149,84 @@ func (o ExampleController) GetTitleListHandler(c *gin.Context) {
 		})
 	}
 	c.JSON(200, gin.H{"code": 200, "msg": "获取文章列表成功", "data": titleContentList})
+}
+
+const (
+	baoyan = iota //保研
+	jiuye         //就业
+	chuguo        //出国
+	kaoyan        //考研
+)
+
+type Step struct {
+	Time        string `xml:"time"`
+	Description string `xml:"description"`
+}
+
+type Route struct {
+	Name  string `xml:"name,attr"`
+	Steps []Step `xml:"step"`
+}
+
+type Routes struct {
+	XMLName xml.Name `xml:"routes"`
+	Routes  []Route  `xml:"route"`
+}
+
+func (o ExampleController) GetRoadsHandler(c *gin.Context) {
+	// 示例XML数据，实际应用中您可能需要从文件中读取
+	//从./roads/route/xml文件中读取
+	fileName := fmt.Sprintf("./roads/route%d.xml", 0)
+	xmlFile, err := os.Open(fileName)
+	if err != nil {
+		panic(err)
+	}
+	defer xmlFile.Close()
+	xmlData, err := ioutil.ReadAll(xmlFile)
+	if err != nil {
+		panic(err)
+	}
+
+	// 解析XML
+	var routes Routes
+	if err := xml.Unmarshal([]byte(xmlData), &routes); err != nil {
+		fmt.Println("Error parsing XML:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	// 取出路线id
+	idstr := c.Param("id")
+	id, err := strconv.Atoi(idstr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	// 使用示例map
+	routeTypes := map[int]string{
+		baoyan: "保研路线",
+		jiuye:  "就业路线",
+		chuguo: "出国路线",
+		kaoyan: "考研路线",
+	}
+
+	target := routeTypes[id] //找到目标路线
+
+	//随机出1或者2，但是要确保逻辑与ID或路线名称匹配
+	randomInt := rand.Intn(2) + 1 //生成1或2
+	key := fmt.Sprintf("%s%d", target, randomInt)
+	fmt.Println("key:", key)
+
+	// 找到对应的路线
+	for _, route := range routes.Routes {
+		if route.Name == key {
+			// 如果找到，返回路线信息
+			c.JSON(http.StatusOK, route)
+			return
+		}
+	}
+
+	// 如果没有找到匹配的路线
+	c.JSON(http.StatusNotFound, gin.H{"error": "Route not found"})
 }

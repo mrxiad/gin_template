@@ -47,14 +47,14 @@ const router = createRouter({
       ]
     },
     {
-      path:'/video',
+      path:'/video/:id',
       name:'video',
       component: import('../components/video.vue'),
     },
     {
-      path:'/selectSchool',
+      path:'/selectSchool/:id',
       name:'selectSchool',
-      component: import('../components/selectSchool.vue'),
+      component: () => import('../components/selectSchool.vue'),
     },
     {
       path:'/article/:id',

@@ -29,38 +29,12 @@ const items = [
   <div id="app">
     <div class="main">
       <div class="ljName">为您推荐如下路线</div>
-      <!-- <van-steps direction="vertical" :active="100">
-        <van-step>
-          <h3>路线1</h3>
-          <p>2016-07-12 12:40</p>
-        </van-step>
-        <van-step>
-          <h3>路线2</h3>
-          <p>2016-07-11 10:00</p>
-        </van-step>
-        <van-step>
-          <h3>路线3</h3>
-          <p>2016-07-11 10:00</p>
-        </van-step>
-        <van-step>
-          <h3>路线4</h3>
-          <p>2016-07-10 09:30</p>
-        </van-step>
-        <van-step>
-          <h3>路线5</h3>
-          <p>2016-07-11 10:00</p>
-        </van-step>
-        <van-step>
-          <h3>路线6</h3>
-          <p>2016-07-10 09:30</p>
-        </van-step>
-      </van-steps> -->
       <div>
         <div class="lineContext" style="position: relative;">
           <div class="line" style="position: absolute; width: 0.2vw; background-color: aqua;"></div>
           <div class="context" style="position: absolute;">
             <h3>路线1</h3>
-            <p>2016-07-12 12:40</p>
+            <p>2080-07-12 12:40</p>
           </div>
         </div>
       </div>

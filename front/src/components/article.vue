@@ -4,8 +4,6 @@ import { ref } from "vue";
 import navbar from "./navbar.vue";
 import { onMounted } from "vue";
 let welcomeIsDisplay = ref('')
-
-
 let articleTitlesContents = ref([]);
 let articleContent = ref([])
 let articleTitle = ref ([])
@@ -27,10 +25,8 @@ onMounted(() => {
       articleContent.value = articleTitlesContents.value[id].content;
       articleContent.value = articleContent.value.replace(/\n/g, '<br>');
 
-
       //对articleTitle赋值
       articleTitle.value = articleTitlesContents.value[id].title;
-
 
       //输出文章标题
       console.log(articleContent.value.substring(0,5))

@@ -2,17 +2,16 @@
 import { ref } from "vue";
 // import navbar from "./indexTitle.vue";
 import { useRouter } from "vue-router";
+
 const router = useRouter();
-const imgList = ref([]);
-const getImgFile = async () => {
-  for (let i = 1; i <= 4; i++) {
-    const file = await import(`../assets/videoImg/img${i}.png`);
-    imgList.value.push(file.default);
-  }
-};
-getImgFile();
-const selectSchool = () => {
-  router.push({ path: "/selectSchool" });
+
+const selectSchool = (index) => {
+  router.push({ 
+    name: "selectSchool",
+    params:{
+      id:index,
+    },
+   });
 };
 
 // 新增：定义四个不同目标的描述
@@ -32,13 +31,14 @@ const slogans = ref([
         class="sloganBox"
         v-for="(slogan, index) in slogans"
         :key="index"
-        @click="selectSchool"
+        @click="selectSchool(index)"
       >
-        <div>{{ slogan.text }}</div>
+        <div class="text">{{ slogan.text }}</div>
       </div>
     </div>
   </div>
 </template>
+
 
 <style scoped lang="scss">
 * {

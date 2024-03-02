@@ -7,16 +7,30 @@ import welcome from './welcome.vue'
 const router = useRouter();
 const welcomeIsDisplay = ref('')
 const imgList = ref([]);
+const imgList2 = ref([]);
 const articleTitles = ref([]);
 const getImgFile = async () => {
   for (let i = 1; i <= 4; i++) {
-    const file = await import(`../assets/videoImg/img${i}.png`);
-    imgList.value.push(file.default);
+    const file = await import(`../assets/fourImg/img${i}.jpg`);
+    if (file!=null){
+      imgList.value.push(file.default);
+    }
+  }
+  for (let i = 1; i <= 2; i++) {
+    const file = await import(`../assets/videoImg/img${i}.jpg`);
+    if (file!=null){
+      imgList2.value.push(file.default);
+    }
   }
 };
 getImgFile();
-const goPlayPage = () => {
-  router.push({ path: "/video" });
+const goPlayPage = (index) => {
+  router.push({ 
+    name: "video",  
+    params:{
+      id:index,
+    },
+   });
 };
 const goArticlePage = (index) => {
   if (index === undefined) {
@@ -54,9 +68,9 @@ onMounted(() => {
         <indexTitle :title="'视频专区'"></indexTitle>
         <div class="videoBoxMain">
           <div
-            v-for="(Item, index) in imgList"
+            v-for="(Item, index) in imgList2"
             :key="index"
-            @click="goPlayPage"
+            @click="goPlayPage(index)"
           >
             <img :src="Item" style="width: 40vw; height: 12vh" />
           </div>

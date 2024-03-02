@@ -1,42 +1,49 @@
 <script setup>
-import { ref } from "vue";
-import navbar from "./navbar.vue";
-const count = ref(10)
+import { ref, onMounted } from 'vue';
+import $ from 'jquery';
+import navbar from './navbar.vue';
+
+const routeDetails = ref(null); // 使用null作为初始值
+
+onMounted(() => {
+  let index = window.location.href.lastIndexOf('/');
+  let id = window.location.href.substring(index + 1);
+  console.log("当前页面的id为" + id);
+  
+  $.ajax({
+    url: `http://localhost:8080/api/routes/${id}`, // 更新为您的后端API地址
+    type: 'GET',
+    dataType: 'json',
+    success: function(data) {
+      routeDetails.value = data; // 直接保存返回的对象
+      console.log("接收到的路线数据:", data);
+    },
+  });
+});
+
 </script>
 
 <template>
   <navbar />
   <div id="app">
     <div class="main">
-      <div class="ljName">为您推荐如下路线</div>
-
-      <div style="width: 100vw;" >
-        <!-- 显示到右边的 -->
-        <div v-for="item in  count" :class="item % 2==0?'left':'right'" :key="item" style="width: 100vw; display: flex; ">
-          <div class="lineContext ">
-            <div class="line" :class= "(item==count)? 'lineAfterTriangle' : 'lineAfterRound'" v-show="item % 2 == 1"></div>
+      <div class="ljName">路线</div>
+      <div style="width: 100vw;" v-if="routeDetails && routeDetails.Steps">
+        <div v-for="(step, index) in routeDetails.Steps" :class="index % 2 == 0 ? 'left' : 'right'" :key="index" style="width: 100vw; display: flex;">
+          <div class="lineContext">
+            <!-- 条件渲染，根据步骤序号的奇偶性决定线条显示在左侧还是右侧 -->
+            <div class="line" :class="(index == routeDetails.Steps.length - 1) ? 'lineAfterTriangle' : 'lineAfterRound'" v-show="index % 2 == 1"></div>
             <div class="context">
-                <h3 :class="item % 2==0?'right':'left'">路线1路线1路线1路线1路线1路线1路线1路线1路线1路线1路线1</h3>
-                <p :class="item % 2==0?'right':'left'">2016-07-12 12:40</p>
+                <h3 :class="index % 2 == 0 ? 'right' : 'left'">{{ step.Description }}</h3>
+                <p :class="index % 2 == 0 ? 'right' : 'left'">{{ step.Time }}</p>
             </div>
-            <div class="line " :class= "(item==count)? 'lineAfterTriangle' : 'lineAfterRound' " v-show="item % 2 == 0"></div>
+            <div class="line" :class="(index == routeDetails.Steps.length - 1) ? 'lineAfterTriangle' : 'lineAfterRound'" v-show="index % 2 == 0"></div>
           </div>
         </div>
-        <!-- 显示到左边的 -->
-        <!-- <div style="width: 100vw; display: flex; justify-content: start;">
-          <div class="lineContext"  style="display: flex;  width: 51vw; height: 13vh; ">
-            <div class="context" style=" width: calc(50vw - 1vw); height: 100%; padding-right: 2vw;">
-                <h3 class="right">路线1</h3>
-                <p class="right">2016-07-12 12:40</p>
-            </div>
-            <div class="line" style="width: 1vw;height: 100%; background-color: aqua;"></div>
-          </div>
-        </div> -->
       </div>
     </div>
   </div>
 </template>
-
 <style scoped lang="scss">
 * {
   box-sizing: border-box;
